@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router";
 import {Button, Col, Container, Form, Row, Toast} from "react-bootstrap";
 import axios from "axios";
@@ -11,29 +11,54 @@ const Detail = () => {
     const [comments, setcomments] = useState([]);
     const [showToast, setShowToast] = useState(false);
     const [message, setMessage] = useState('');
+    const commentRef = useRef(null);
+    const [refresh, setrefresh] = useState(0);
+    const username = localStorage.getItem('username');
 
     useEffect(() => {
         // Fetch products from backend
         axios.post('http://localhost:8000/detail', {productId})
             .then(response => {
                 setProduct(response.data.product);
-                console.log(product);
+                // console.log(product);
                 setcomments(response.data.comments);
-                console.log(comments);
+                // console.log(comments);
             })
             .catch(error => {
                 console.error(error);
             });
-    }, []);
+    }, [refresh]);
 
-    const handleSubmit = () => {
-        axios.get('http://localhost:8000/addComment')
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const comment = commentRef.current.value;
+        axios.post('http://localhost:8000/addComment', {comment, productId})
             .then(response => {
                 if (response.data.success) {
                     setMessage(response.data.message);
                     setShowToast(true);
                     setTimeout(() => setShowToast(false), 800);
-                    window.location.reload();
+                    // window.location.reload();
+                    setrefresh(1 ^ refresh); // 更新评论列表状态
+                    commentRef.current.value = ''; // 清空评论输入框
+                }
+            })
+            .catch(error => {
+                setMessage(error);
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 800);
+                console.log(error)
+            });
+    }
+    const handleDelete = (commentId) => {
+        console.log(commentId);
+        axios.post('http://localhost:8000/deleteComment', {commentId})
+            .then(response => {
+                if (response.data.success) {
+                    setMessage(response.data.message);
+                    setShowToast(true);
+                    setTimeout(() => setShowToast(false), 800);
+                    setrefresh(1 ^ refresh); // Update comments list
                 }
             })
             .catch(error => {
@@ -63,7 +88,11 @@ const Detail = () => {
                             <li>
                                 <span>{comment.user.username}</span>
                                 <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{comment.comment_time}</span>
-                                <p>content：{comment.content}</p>
+                                <div>content：<b>{comment.content}</b>
+                                {comment.user.username === username && (
+                                    <Button variant="danger" className={"float-end"} onClick={() => handleDelete(comment.id)}>Delete</Button>
+                                )}
+                                </div>
                             </li>
                         ))
                         }
@@ -76,6 +105,7 @@ const Detail = () => {
                     <Form.Control
                         as="textarea"
                         rows={3}
+                        ref={commentRef}
                     />
                 </Form.Group>
                 <Button variant="primary" type="submit">
