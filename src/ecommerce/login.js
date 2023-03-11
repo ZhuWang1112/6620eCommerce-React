@@ -2,6 +2,7 @@ import axios from 'axios';
 import {useState} from "react";
 import {Navigate} from "react-router";
 import {Link} from "react-router-dom";
+import {API_BASE_URL} from "../config";
 
 axios.defaults.withCredentials = true
 
@@ -14,7 +15,7 @@ const Login = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/login', {username, password});
+            const response = await axios.post(`${API_BASE_URL}/login`, {username, password});
             console.log(response.data);
             setShouldRedirect(true); // 设置为true
             localStorage.setItem('username', username);

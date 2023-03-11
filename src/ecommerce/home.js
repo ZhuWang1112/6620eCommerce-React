@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 import {Container, Row, Col, Toast, Nav} from 'react-bootstrap';
 import {Link} from "react-router-dom";
+import {API_BASE_URL} from "../config";
 
 
 
@@ -12,7 +13,7 @@ function Home() {
 
     useEffect(() => {
         // Fetch products from backend
-        axios.get('http://localhost:8000/home')
+        axios.get(`${API_BASE_URL}/home`)
             .then(response => {
                 setProducts(response.data.data.map(item => ({
                     ...item,
@@ -26,7 +27,7 @@ function Home() {
     }, []);
 
     const addToCart = (productId) => {
-        axios.post('http://localhost:8000/cart/modify', {productId})
+        axios.post(`${API_BASE_URL}/cart/modify`, {productId})
             .then(response => {
                 if (response.data.success) {
                     setProducts(products.map(product => {

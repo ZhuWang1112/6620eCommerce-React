@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {useParams} from "react-router";
 import {Button, Col, Container, Form, Row, Toast} from "react-bootstrap";
 import axios from "axios";
+import {API_BASE_URL} from "../config";
 
 
 const Detail = () => {
@@ -17,7 +18,7 @@ const Detail = () => {
 
     useEffect(() => {
         // Fetch products from backend
-        axios.post('http://localhost:8000/detail', {productId})
+        axios.post(`${API_BASE_URL}/detail`, {productId})
             .then(response => {
                 setProduct(response.data.product);
                 // console.log(product);
@@ -32,7 +33,7 @@ const Detail = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         const comment = commentRef.current.value;
-        axios.post('http://localhost:8000/addComment', {comment, productId})
+        axios.post(`${API_BASE_URL}/addComment`, {comment, productId})
             .then(response => {
                 if (response.data.success) {
                     setMessage(response.data.message);
@@ -52,7 +53,7 @@ const Detail = () => {
     }
     const handleDelete = (commentId) => {
         console.log(commentId);
-        axios.post('http://localhost:8000/deleteComment', {commentId})
+        axios.post(`${API_BASE_URL}/deleteComment`, {commentId})
             .then(response => {
                 if (response.data.success) {
                     setMessage(response.data.message);

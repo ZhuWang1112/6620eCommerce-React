@@ -2,8 +2,6 @@ import './App.css';
 import {BrowserRouter} from "react-router-dom";
 import {Route, Routes} from "react-router";
 import Login from "./ecommerce/login";
-import Home from "./ecommerce/home";
-import Cart from "./ecommerce/Cart";
 import Register from "./ecommerce/register";
 import Content from "./ecommerce/content";
 

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { Navigate } from "react-router";
+import {API_BASE_URL} from "../config";
 
 
 const Register = () => {
@@ -17,7 +18,7 @@ const Register = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:8000/register', { username, password });
+      const response = await axios.post(`${API_BASE_URL}/register`, { username, password });
       if (response.data.success) {
         setShouldRedirect(true);
       } else {

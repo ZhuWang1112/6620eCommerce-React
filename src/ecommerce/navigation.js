@@ -3,6 +3,7 @@ import {Navbar, Nav} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import axios from "axios";
 import {Navigate} from "react-router";
+import {API_BASE_URL} from "../config";
 
 function Navi() {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -10,7 +11,7 @@ function Navi() {
     const [shouldRedirect, setShouldRedirect] = useState(false);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/checklogin',)
+        axios.get(`${API_BASE_URL}/checklogin`,)
             .then(response => {
                 setLoggedIn(response.data.success);
             })
@@ -21,7 +22,7 @@ function Navi() {
 
     // console.log(loggedIn);
     const logout = () => {
-        axios.get('http://localhost:8000/log_out')
+        axios.get(`${API_BASE_URL}/log_out`)
             .then(response => {
                 if (response.data.success) {
                     setShouldRedirect(true);

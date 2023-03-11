@@ -1,13 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import {Link} from "react-router-dom";
+import {API_BASE_URL} from "../config";
 
 function Cart() {
     const [cartItems, setCartItems] = useState([]);
     const [cartTotal, setCartTotal] = useState(0);
 
     useEffect(() => {
-        axios.get('http://localhost:8000/cart')
+        axios.get(`${API_BASE_URL}/cart`)
             .then(response => {
                 if (response.data.success) {
                     setCartItems(response.data.cart_items.map(item => ({
@@ -30,7 +31,7 @@ function Cart() {
     }, []);
 
     const handleAddItem = (productId, productPrice) => {
-        axios.post('http://localhost:8000/cart/modify', {productId})
+        axios.post(`${API_BASE_URL}/cart/modify`, {productId})
             .then(response => {
                 if (response.data.success) {
                     setCartItems(prevItems => {
@@ -55,7 +56,7 @@ function Cart() {
     };
 
     const handleReduceItem = (productId, productPrice) => {
-        axios.put('http://localhost:8000/cart/modify', {productId})
+        axios.put(`${API_BASE_URL}/cart/modify`, {productId})
             .then(response => {
                 if (response.data.success) {
                     setCartItems(prevItems => {
@@ -85,7 +86,7 @@ function Cart() {
     };
 
     const handleDeleteItem = (productId, productTotalPrice) => {
-        axios.delete('http://localhost:8000/cart/modify', {data: {productId}})
+        axios.delete(`${API_BASE_URL}/cart/modify`, {data: {productId}})
             .then(response => {
                 if (response.data.success) {
                     setCartItems(prevItems => prevItems.filter(item => item.product.id !== productId));
